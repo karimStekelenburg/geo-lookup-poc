@@ -8,11 +8,16 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@types/geojson": "^7946.0.7",
     "expo": "~38.0.8",
+    "expo-location": "~8.2.1",
     "expo-status-bar": "^1.0.2",
+    "h3-js": "^3.6.4",
+    "h3-reactnative": "git+https://github.com/realPrimoh/h3-reactnative.git",
     "react": "~16.11.0",
     "react-dom": "~16.11.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
+    "react-native-maps": "0.27.1",
     "react-native-web": "~0.11.7"
   },
   "devDependencies": {
