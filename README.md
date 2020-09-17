@@ -1,8 +1,8 @@
 # geo-lookup-poc
 
 ## Dependencies
-- [H3 - a library that devides the world into neat multi-level hexagons](https://eng.uber.com/h3/)
-- 
+- [H3 (hexagon lib)](https://eng.uber.com/h3/)
+- [MapView (map lib for rn)](https://docs.expo.io/versions/latest/sdk/map-view) 
 
 ## Lingo
 In order to make life easy, we'll introduce some terms here that refer to project specific concepts.
@@ -13,7 +13,7 @@ The term 'grayzone' is used to refer to the area between the circle-shaped geo-f
 
 ## Todo
 - [x] Initialize expo app
-- [ ] Get a map goin' ([MapView will do](https://docs.expo.io/versions/latest/sdk/map-view/))
+- [x] Get a map goin' ([MapView will do](https://docs.expo.io/versions/latest/sdk/map-view/))
 - [ ] Project H3 hexagons onto el map
 - [ ] Find H3 hex of current location
 - [ ] Find neigboring hexes
