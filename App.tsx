@@ -1,8 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import MapView, { Geojson } from 'react-native-maps';
+import MapView, { Circle, Geojson } from 'react-native-maps';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
-import { getAreaGeoJson, getCurrentIndexGeoJson } from "./src/hex-util";
+import { getAreaGeoJson, getCurrentIndexGeoJson, HexController } from "./src/hex-util";
 import * as Location from 'expo-location';
 
 interface UserLocation {
@@ -20,6 +20,8 @@ interface UserLocation {
 export default function App() {
   // const [location, setLocation] = useState<Location.LocationData | undefined>(undefined);
   const [errorMsg, setErrorMsg] = useState('');
+  const [position, setPosition] = useState({latitude: 0, longitude: 0})
+  const [radius, setRadius] = useState(0)
   const [geoJson, setGeoJson] = useState<GeoJSON.GeoJSON>(
     {
       "type": "FeatureCollection",
@@ -30,7 +32,7 @@ export default function App() {
           geometry: {
             type: 'Point',
             // coordinates: [location.coords.latitude, location.coords.longitude],
-            coordinates: [53.173119, 5.121420],
+            coordinates: [5.121420, 53.173119],
           }
         }
       ]
@@ -40,29 +42,30 @@ export default function App() {
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
-
       if (status !== 'granted') {
         setErrorMsg('Permission to access location was denied');
       }
       let location = await Location.getCurrentPositionAsync({});
-      const myPlace: GeoJSON.GeoJSON  = {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            properties: {},
-            geometry: {
-              type: 'Point',
-              // coordinates: [location.coords.latitude, location.coords.longitude],
-              coordinates: [location.coords.longitude, location.coords.latitude],
-              // coordinates: [52.090736, 5.121420],
-              // coordinates: [37.785834, -122.406417],
-            }
-          }
-        ]
-      };
-      let areaJson = getAreaGeoJson(location)
-      setGeoJson(areaJson)
+      let controller = new HexController(location, 3)
+      setPosition({latitude: controller.getCurrentHexCenter()[0], longitude: controller.getCurrentHexCenter()[1]})
+      setRadius(controller.calcIncircleRadius())
+      setGeoJson(controller.getWorkspaceGeoJson(7))
+      
+      
+      // setGeoJson({
+      //   "type": "FeatureCollection",
+      //   "features": [
+      //     {
+      //       type: 'Feature',
+      //       properties: {},
+      //       geometry: {
+      //         type: 'Point',
+      //         // coordinates: [location.coords.latitude, location.coords.longitude],
+      //         coordinates: [5.121420, 51.173119],
+      //       }
+      //     }
+      //   ]
+      // })
       // setGeoJson(getCurrentIndex(location!, 4));
     })();
 
@@ -80,6 +83,7 @@ export default function App() {
     <View style={styles.container}>
       <MapView style={styles.mapStyle}>
         <Geojson geojson={geoJson} />
+        <Circle center={position} radius={radius} />
       </MapView>
       <Text>{text}</Text>
       <StatusBar style="auto" />
